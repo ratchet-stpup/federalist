@@ -1,50 +1,50 @@
 import React from 'react';
-import { Link } from 'react-router';
+import PropTypes from 'prop-types';
 
-import { replaceHistory } from '../actions/routeActions';
-import siteActions from '../actions/siteActions';
+import { connect } from 'react-redux';
 
 import SideNav from './site/SideNav/sideNav';
 import PagesHeader from './site/pagesHeader';
 import AlertBanner from './alertBanner';
 
 const propTypes = {
-  storeState: React.PropTypes.object,
-  params: React.PropTypes.object //{id, branch, splat, fileName}
+  storeState: PropTypes.object,
+  params: PropTypes.object, // {id, branch, splat, fileName}
 };
 
-class SiteContainer extends React.Component {
-  constructor(props) {
-    super(props);
+
+function getPageTitle(pathname) {
+  return pathname.split('/').pop();
+}
+
+function getCurrentSite(sitesState, siteId) {
+  if (sitesState.isLoading || !sitesState.data) {
+    return null;
   }
 
-  getPageTitle(pathname) {
-    return pathname.split('/').pop();
-  }
+  return sitesState.data.find(site => String(site.id) === String(siteId));
+}
 
-  getCurrentSite(sitesState, siteId) {
-    if (sitesState.isLoading) {
-      return null
-    }
-
-    return sitesState.data.find((site) => {
-      // force type coersion
-      return site.id == siteId;
-    });
-  }
-
-  render () {
+export class SiteContainer extends React.Component {
+  render() {
     const { storeState, children, params, location } = this.props;
 
-    const site = this.getCurrentSite(storeState.sites, params.id)
-    const builds = storeState.builds
-    const buildLogs = storeState.buildLogs
-    const publishedBranches = storeState.publishedBranches
-    const publishedFiles = storeState.publishedFiles
-    const githubBranches = storeState.githubBranches
-    const childConfigs = { site, builds, buildLogs, publishedBranches, publishedFiles, githubBranches }
+    const site = getCurrentSite(storeState.sites, params.id);
+    const builds = storeState.builds;
+    const buildLogs = storeState.buildLogs;
+    const publishedBranches = storeState.publishedBranches;
+    const publishedFiles = storeState.publishedFiles;
+    const githubBranches = storeState.githubBranches;
+    const childConfigs = {
+      site,
+      builds,
+      buildLogs,
+      publishedBranches,
+      publishedFiles,
+      githubBranches,
+    };
 
-    const pageTitle = this.getPageTitle(location.pathname);
+    const pageTitle = getPageTitle(location.pathname);
 
     if (!site) {
       return null;
@@ -56,7 +56,8 @@ class SiteContainer extends React.Component {
         <div className="usa-width-five-sixths site-main" id="pages-container">
           <AlertBanner
             message={storeState.alert.message}
-            status={storeState.alert.status}/>
+            status={storeState.alert.status}
+          />
           <PagesHeader
             repository={site.repository}
             owner={site.owner}
@@ -79,4 +80,4 @@ class SiteContainer extends React.Component {
 
 SiteContainer.propTypes = propTypes;
 
-export default SiteContainer;
+export default connect(state => state)(SiteContainer);

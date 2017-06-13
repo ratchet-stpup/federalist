@@ -1,35 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Notifications from 'react-notification-system-redux';
+import { connect } from 'react-redux';
 
 import alertActions from '../actions/alertActions';
 import LoadingIndicator from './loadingIndicator';
 import Header from './header';
 
-function getUsername(storeState) {
-  const userState = storeState.user;
-  if (!userState.isLoading && userState.data) {
-    return userState.data.username;
-  }
-  return null;
-}
-
-class App extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = this.getStateFromStore();
-  }
-
+export class App extends React.Component {
   componentWillReceiveProps(nextProps) {
-    const state = this.getStateFromStore();
-    const { alert } = state;
-
+    const { alert } = this.props;
     this.shouldClearAlert(alert, nextProps);
-    this.setState(state);
-  }
-
-  getStateFromStore() {
-    return this.context.state.get();
   }
 
   shouldClearAlert(alert, nextProps) {
@@ -46,10 +27,9 @@ class App extends React.Component {
   }
 
   render() {
-    const { children } = this.props;
-    const storeState = this.state;
+    const { user, children, notifications } = this.props;
 
-    if (storeState.user.isLoading) {
+    if (!user || user.isLoading) {
       return (
         <div>
           <Header />
@@ -57,23 +37,20 @@ class App extends React.Component {
         </div>
       );
     }
+
+    const username = !user.isLoading && user.data ? user.data.username : null;
+
     return (
       <div>
-        <Notifications notifications={storeState.notifications} />
+        <Notifications notifications={notifications} />
         <Header
-          username={getUsername(storeState)}
+          username={username}
         />
-        {children && React.cloneElement(children, {
-          storeState,
-        })}
+        { children && React.cloneElement(children, { storeState: this.props }) }
       </div>
     );
   }
 }
-
-App.contextTypes = {
-  state: PropTypes.object,
-};
 
 App.propTypes = {
   children: PropTypes.oneOfType([
@@ -83,11 +60,37 @@ App.propTypes = {
   location: PropTypes.shape({
     key: PropTypes.string.isRequired,
   }),
+  user: PropTypes.oneOfType([
+    // When the user is not auth'd, this prop is false, which is a little weird
+    PropTypes.bool,
+    PropTypes.shape({
+      isLoading: PropTypes.bool.isRequired,
+      data: PropTypes.shape({
+        createdAt: PropTypes.string.isRequired,
+        updatedAt: PropTypes.string.isRequired,
+        username: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+        id: PropTypes.number.isRequired,
+      }),
+    }),
+  ]),
+  notifications: PropTypes.arrayOf(
+    PropTypes.shape({
+      level: PropTypes.string.isRequired,
+      message: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      position: PropTypes.string.isRequired,
+      autoDismiss: PropTypes.number.isRequired,
+      uid: PropTypes.number.isRequired,
+    })
+  ),
 };
 
 App.defaultProps = {
   children: null,
   location: null,
+  user: null,
+  notifications: [],
 };
 
-export default App;
+export default connect(state => state)(App);

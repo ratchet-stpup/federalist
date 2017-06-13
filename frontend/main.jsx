@@ -12,24 +12,17 @@ import userActions from './actions/userActions';
 import routes from './routes';
 import store from './store';
 
-import CustomProvider from './util/provider';  // TODO: Phase this out
-
 require('./sass/styles.scss');
 
 const mainEl = document.querySelector('#js-app');
 
-store.subscribe(() => {
-  render((
-    <Provider store={store}>
-      <CustomProvider state={{ get: store.getState }}>
-        <Router history={browserHistory}>
-          {routes}
-        </Router>
-      </CustomProvider>
-    </Provider>
-  ), mainEl);
-});
-
+render((
+  <Provider store={store}>
+    <Router history={browserHistory}>
+      {routes}
+    </Router>
+  </Provider>
+), mainEl);
 
 userActions.fetchUser();
 siteActions.fetchSites();
