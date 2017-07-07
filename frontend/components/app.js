@@ -53,6 +53,10 @@ export class App extends React.Component {
 }
 
 App.propTypes = {
+  alert: PropTypes.shape({
+    message: PropTypes.string,
+    stale: PropTypes.bool,
+  }),
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
@@ -87,6 +91,7 @@ App.propTypes = {
 };
 
 App.defaultProps = {
+  alert: null,
   children: null,
   location: null,
   user: null,
