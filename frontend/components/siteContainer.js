@@ -39,7 +39,7 @@ const defaultProps = {
   storeState: null,
 };
 
-class SiteContainer extends React.Component {
+export class SiteContainer extends React.Component {
   getPageTitle(pathname) {
     return pathname.split('/').pop();
   }

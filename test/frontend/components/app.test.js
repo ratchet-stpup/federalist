@@ -10,23 +10,15 @@ const alertActionUpdate = stub();
 const Header = () => <div />;
 
 const username = 'jenny mcuser';
-const appState = {
+
+const props = {
+  alert: {},
   user: {
     data: {
       username,
     },
     isLoading: false,
   },
-  alert: {},
-};
-
-const context = state => ({
-  state: {
-    get: stub().returns(state),
-  },
-});
-
-const props = {
   location: {
     key: 'a-route',
   },
@@ -43,7 +35,7 @@ describe('<App/>', () => {
 
   beforeEach(() => {
     // TODO: need to figure out the store mocking here and refactor these
-    wrapper = shallow(<AppFixture {...props} />, { context: context(appState) });
+    wrapper = shallow(<AppFixture {...props} />);
     alertActionUpdate.reset();
   });
 
@@ -66,30 +58,30 @@ describe('<App/>', () => {
   });
 
   it('does not trigger an alert update if the route has not changed', () => {
-    const newAppState = Object.assign({}, appState, {
+    const newProps = Object.assign({}, props, {
       alert: {
         message: 'hello!',
         stale: false,
       },
     });
 
-    wrapper = shallow(<AppFixture {...props} />, { context: context(newAppState) });
+    wrapper = shallow(<AppFixture {...newProps} />);
     wrapper.setProps({ location: { key: 'a-route' } });
     expect(alertActionUpdate.called).to.be.false;
   });
 
   it('triggers an alert update if there is an alert message', () => {
-    const newAppState = Object.assign({}, appState, {
+    const newProps = Object.assign({}, props, {
       alert: {
         message: 'hello!',
         stale: false,
       },
     });
 
-    wrapper = shallow(<AppFixture {...props} />, { context: context(newAppState) });
+    wrapper = shallow(<AppFixture {...newProps} />);
 
     wrapper.setProps({ location: { key: 'next-route' } });
     expect(alertActionUpdate.called).to.be.true;
-    expect(alertActionUpdate.calledWith(newAppState.alert.stale)).to.be.true;
+    expect(alertActionUpdate.calledWith(newProps.alert.stale)).to.be.true;
   });
 });

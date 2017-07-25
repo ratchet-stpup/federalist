@@ -53,7 +53,7 @@ const addWebsiteButton = () => (
   </Link>
 );
 
-const SiteList = ({ storeState }) =>
+export const SiteList = ({ storeState }) =>
   (<div>
     <div className="usa-grid dashboard header">
       <div className="usa-width-two-thirds">
