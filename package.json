@@ -108,6 +108,7 @@
     "react-router": "^2.4.1",
     "react-test-renderer": "^15.5.4",
     "redux": "^3.5.2",
+    "redux-devtools-extension": "^2.13.2",
     "redux-logger": "^3.0.6",
     "sass-loader": "^6.0.5",
     "shortid": "^2.2.8",

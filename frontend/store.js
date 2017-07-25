@@ -1,11 +1,12 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 import reducers from './reducers';
 import { reroute, createNotifier } from './middleware';
 import { notificationSettings } from './util/notificationSettings';
 
-const app = combineReducers(reducers);
+const reducer = combineReducers(reducers);
 
 const middlewares = [
   reroute,
@@ -14,8 +15,8 @@ const middlewares = [
 ];
 
 const store = createStore(
-  app,
-  applyMiddleware(...middlewares)
+  reducer,
+  composeWithDevTools(applyMiddleware(...middlewares))
 );
 
 const dispatch = store.dispatch;
