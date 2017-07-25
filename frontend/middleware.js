@@ -1,4 +1,4 @@
-import { browserHistory } from 'react-router';
+import { browserHistory } from 'react-router-dom';
 import Notifications from 'react-notification-system-redux';
 
 import { updateRouterType as UPDATE_ROUTER } from './actions/actionCreators/navigationActions';

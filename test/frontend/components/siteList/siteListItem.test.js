@@ -21,7 +21,7 @@ describe('<SiteListItem />', () => {
 
   beforeEach(() => {
     Fixture = proxyquire('../../../../frontend/components/siteList/siteListItem', {
-      'react-router': { Link },
+      'react-router-dom': { Link },
       './publishedState': PublishedState,
     }).default;
   });
