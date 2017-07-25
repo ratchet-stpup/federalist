@@ -1,40 +1,90 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
 
 import SideNav from './site/SideNav/sideNav';
 import PagesHeader from './site/pagesHeader';
 import AlertBanner from './alertBanner';
+import LoadingIndicator from './loadingIndicator';
 
 const propTypes = {
-  storeState: PropTypes.object,
-  params: PropTypes.object, // {id, branch, splat, fileName}
+  params: PropTypes.shape({
+    id: PropTypes.string,
+    branch: PropTypes.string,
+    fileName: PropTypes.string,
+  }).isRequired,
+  storeState: PropTypes.shape({
+    sites: PropTypes.object,
+    builds: PropTypes.object,
+    buildLogs: PropTypes.object,
+    publishedBranches: PropTypes.object,
+    publishedFiles: PropTypes.object,
+    githubBranches: PropTypes.object,
+    alert: PropTypes.shape({
+      message: PropTypes.string,
+      status: PropTypes.string,
+    }),
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+  }).isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
 };
 
+const defaultProps = {
+  children: null,
+  storeState: null,
+};
 
-function getPageTitle(pathname) {
-  return pathname.split('/').pop();
-}
-
-function getCurrentSite(sitesState, siteId) {
-  if (sitesState.isLoading || !sitesState.data) {
-    return null;
+class SiteContainer extends React.Component {
+  getPageTitle(pathname) {
+    return pathname.split('/').pop();
   }
 
-  return sitesState.data.find(site => String(site.id) === String(siteId));
-}
+  getCurrentSite(sitesState, siteId) {
+    if (sitesState.isLoading) {
+      return null;
+    }
 
-export class SiteContainer extends React.Component {
+    return sitesState.data.find(site => site.id === parseInt(siteId, 10));
+  }
+
   render() {
     const { storeState, children, params, location } = this.props;
 
-    const site = getCurrentSite(storeState.sites, params.id);
+    if (storeState.sites.isLoading) {
+      return <LoadingIndicator />;
+    }
+
+    const site = this.getCurrentSite(storeState.sites, params.id);
+
+    if (!site) {
+      return (
+        <div className="usa-grid">
+          <div className="usa-alert usa-alert-error" role="alert">
+            <div className="usa-alert-body">
+              <h3 className="usa-alert-heading">Unauthorized</h3>
+              <p className="usa-alert-text">
+                Apologies; you don&apos;t have access to this site in Federalist!
+                <br />
+                Please contact the site owner if you should have access.
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const pageTitle = this.getPageTitle(location.pathname);
     const builds = storeState.builds;
     const buildLogs = storeState.buildLogs;
     const publishedBranches = storeState.publishedBranches;
     const publishedFiles = storeState.publishedFiles;
     const githubBranches = storeState.githubBranches;
+
     const childConfigs = {
       site,
       builds,
@@ -43,12 +93,6 @@ export class SiteContainer extends React.Component {
       publishedFiles,
       githubBranches,
     };
-
-    const pageTitle = getPageTitle(location.pathname);
-
-    if (!site) {
-      return null;
-    }
 
     return (
       <div className="usa-grid site">
@@ -79,5 +123,6 @@ export class SiteContainer extends React.Component {
 }
 
 SiteContainer.propTypes = propTypes;
+SiteContainer.defaultProps = defaultProps;
 
 export default connect(state => state)(SiteContainer);
