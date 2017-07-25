@@ -55,7 +55,7 @@ class SiteContainer extends React.Component {
   render() {
     const { storeState, children, params, location } = this.props;
 
-    if (storeState.sites.isLoading) {
+    if (storeState.sites.isLoading || !storeState.sites.data) {
       return <LoadingIndicator />;
     }
 

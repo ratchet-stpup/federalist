@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
 import AlertBanner from '../alertBanner';
@@ -23,7 +23,7 @@ const getSites = (sitesState) => {
     return <LoadingIndicator />;
   }
 
-  if (!sitesState.data.length) {
+  if (!sitesState.data || !sitesState.data.length) {
     return (
       <div className="usa-grid">
         <h1>No sites yet.</h1>

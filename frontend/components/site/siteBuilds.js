@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import autoBind from 'react-autobind';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import buildActions from '../../actions/buildActions';
 import LoadingIndicator from '../loadingIndicator';

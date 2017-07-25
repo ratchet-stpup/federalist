@@ -4,23 +4,26 @@ import 'babel-polyfill';
 import { render } from 'react-dom';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { ConnectedRouter } from 'react-router-redux';
+import { Router, browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 import siteActions from './actions/siteActions';
 import userActions from './actions/userActions';
 
-import Routes from './routes';
-import store, { history } from './store';
+import routes from './routes';
+import store from './store';
 
 require('./sass/styles.scss');
+
+const history = syncHistoryWithStore(browserHistory, store);
 
 const mainEl = document.querySelector('#js-app');
 
 render((
-  <Provider store={store} history={history}>
-    <ConnectedRouter history={history}>
-      <Routes />
-    </ConnectedRouter>
+  <Provider store={store}>
+    <Router history={history}>
+      { routes }
+    </Router>
   </Provider>
 ), mainEl);
 

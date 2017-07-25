@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import Nav from '../../../frontend/components/nav';
 

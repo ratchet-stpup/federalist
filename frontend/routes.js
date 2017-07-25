@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, IndexRedirect, IndexRoute, Redirect } from 'react-router-dom';
+import { Route, IndexRedirect, IndexRoute, Redirect } from 'react-router';
 
 import App from './components/app';
 import SiteList from './components/siteList/siteList';
@@ -13,7 +13,7 @@ import NewSite from './components/AddSite';
 import NotFound from './components/NotFound';
 import Home from './components/home';
 
-export default () => (
+export default (
   <Route path="/" component={App}>
     <IndexRoute component={Home} />
     <Route path="sites">
