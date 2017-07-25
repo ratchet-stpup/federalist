@@ -94,6 +94,8 @@ const scanjsRules = {
 
 const finalRules = {
   /** airbnb config overrides **/
+  // allow names to be the same as the default for Redux container testing
+  'import/no-named-as-default': [0],
   'react/jsx-filename-extension': [0],
   'import/no-extraneous-dependencies': [0],
   'class-methods-use-this': [0],
